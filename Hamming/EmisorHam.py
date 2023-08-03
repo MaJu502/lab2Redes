@@ -44,6 +44,8 @@ def emisor_Hamming(mensaje):
             archivo.write(' '.join(retorno_str))
             archivo.write('\n')
             archivo.write(codes)
+        
+        print(" -> Mensaje codificado en codedMessageHamming.txt ")
 
     except FileNotFoundError:
         print(f"Error: El archivo '{mensaje}' no fue encontrado.")
