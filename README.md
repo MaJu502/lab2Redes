@@ -17,6 +17,7 @@ Este es un programa que implementa el algoritmo de Hamming para codificar y deco
    - El resultado de la codificación se almacenará en el archivo de texto "codedMessageHamming.txt".
 
 3. Decodificar el mensaje:
+   - Nota: Si desea cambiar el codigo para manualmente ingresar errores debe de hacerlo en el archivo de texto "codedMessageHamming.txt".
    - Ejecute el programa de Java que se encarga de descodificar el mensaje previamente codificado.
    - El programa leerá el contenido del archivo "codedMessageHamming.txt" y realizará la decodificación.
    - Dependiendo del resultado, se le notificará si el código contiene errores y, si es así, se corregirán automáticamente. En caso contrario, se le informará que el código está correcto.
