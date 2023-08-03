@@ -12,7 +12,7 @@ Este es un programa que implementa el algoritmo de Hamming para codificar y deco
    - Ejecute el programa de Python que implementa el algoritmo Hamming.
    - Puede hacerlo presionando la tecla F5 en su entorno de desarrollo o mediante el siguiente comando en la línea de comandos:
      ```
-     python hamming.py
+     python EmisorHam.py
      ```
    - El resultado de la codificación se almacenará en el archivo de texto "codedMessageHamming.txt".
 
