@@ -25,3 +25,10 @@ Este es un programa que implementa el algoritmo de Hamming para codificar y deco
 ¡Listo! Ahora debería tener el mensaje original decodificado y listo para su lectura.
 
 Recuerde que tanto el programa de Python como el de Java deben estar en el mismo directorio que los archivos de texto mencionados para que el proceso de codificación y decodificación funcione correctamente.
+
+
+## Instrucciones para ejecutar CRC32
+
+En el codigo ingresa la trama a evaluar y el programa ya tiene definido por defecto el polinomio a utilizar, este programa generará un txt el cual contiene el mensaje con el algoritmo aplicado. 
+
+En el archivo receptor.js unicamente ejecute en terminal el comando node receptor.js y se imprimira en consola el resultado. 
