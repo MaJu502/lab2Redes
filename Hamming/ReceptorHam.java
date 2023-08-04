@@ -4,6 +4,9 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.swing.plaf.basic.BasicInternalFrameTitlePane.SystemMenuBar;
+
 import java.util.Arrays;
 
 public class ReceptorHam {
@@ -48,7 +51,10 @@ public class ReceptorHam {
         }
 
         int[][] arregloCodesEnteros = convertirArregloEntero(arregloCodes);
-        int[] decimalesporMensaje = new int[arregloCodesEnteros.length];
+        int[] decimalesporMensaje = new int[arregloMensajesInvertidos.length];
+
+        // proceso de decodificar
+
 
         // descodificar
         for (int i = 0; i < arregloMensajesInvertidos.length; i++) {
@@ -56,6 +62,14 @@ public class ReceptorHam {
             int[] resultado_paridad = new int[arregloCodesEnteros.length];
             int[] contenido = arregloMensajesInvertidos[i];
             int[][] contenidoPorCodigo = obtenerContenidoDecodificado(contenido, arregloCodesEnteros);
+
+
+            for (int p = 0; p < contenidoPorCodigo.length; p++) {
+                for (int b = 0; b < contenidoPorCodigo[p].length; b++) {
+                    System.out.print(contenidoPorCodigo[p][b] + " ");
+                }
+                System.out.println(); // Nueva línea después de imprimir una fila completa
+            }
 
             for (int j = 0; j < contenidoPorCodigo.length; j++) {
                 int[] codigo = contenidoPorCodigo[j];
@@ -75,23 +89,12 @@ public class ReceptorHam {
             decimalesporMensaje[i] = gg;
         }
 
-        // ahora que se saben que decimales son los de error
-        
-        List<Integer> errores = new ArrayList<>();
-        for (int i = 0; i < decimalesporMensaje.length; i++) {
-            int decimal = decimalesporMensaje[i];
-            if (decimal == 0) {} else {
-                System.out.println("\n-------------------------------------------------------------------\n");
-                System.out.println("Error encontrado en cadena " + i + " del mensaje(s) lee en indice: " + decimal);
-                // Agregar el índice a la lista de errores
-                errores.add(decimal);
-            }
-        }
+        System.out.println(Arrays.toString(decimalesporMensaje));
 
         // buscar el error
-        if (errores.isEmpty()) {
+        if (contieneSoloCeros(decimalesporMensaje)) {
             System.out.println("\n-------------------------------------------------------------------\n");
-            System.out.println("Todo bien, no se encontraron errores en el mensaje(s) recibido:");
+            System.out.println("Todo bien, el array decimalporMensaje contiene únicamente 0's:");
             for (String x : arregloMensajes) {
                 System.out.println("     " + x);
             }
@@ -102,18 +105,22 @@ public class ReceptorHam {
             }
             for (int i = 0; i < arregloMensajesInvertidos.length; i++) {
                 int[] elemento = arregloMensajesInvertidos[i];
-                int indi = errores.get(i).intValue();
-                if (indi >= 0 && indi < elemento.length) {
+                int indi = decimalesporMensaje[i];
+                System.out.println(indi);
+                if (indi > 0 && indi < elemento.length) {
                     int hh = elemento[indi-1];
                     int nuevo_num = (hh == 0) ? 1 : 0;
                     System.out.println("     --> Se ha cambiado el bit erroneo " + hh + " por " + nuevo_num + " para corregir.");
                     elemento[indi-1] = nuevo_num;
                     arregloMensajesInvertidos[i] = elemento;
 
+                } else if (indi == 0){
+                    // No se hace nada
                 } else {
                     System.out.println("Error: el índice " + i + " está fuera del rango del arregloMensajes.");
                 }
             }
+            
             
             int[][] arregloMensajesDesinvertidos = new int[arregloMensajesInvertidos.length][];
             for (int i = 0; i < arregloMensajesInvertidos.length; i++) {
@@ -141,6 +148,16 @@ public class ReceptorHam {
         // mensajes de adios
 
 
+    }
+
+    // Función para verificar si un array contiene únicamente 0's
+    public static boolean contieneSoloCeros(int[] array) {
+        for (int elemento : array) {
+            if (elemento != 0) {
+                return false;
+            }
+        }
+        return true;
     }
 
     // Método para obtener el contenido por código
