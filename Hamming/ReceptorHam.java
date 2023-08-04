@@ -60,14 +60,6 @@ public class ReceptorHam {
             int[] contenido = arregloMensajesInvertidos[i];
             int[][] contenidoPorCodigo = obtenerContenidoDecodificado(contenido, arregloCodesEnteros);
 
-
-            for (int p = 0; p < contenidoPorCodigo.length; p++) {
-                for (int b = 0; b < contenidoPorCodigo[p].length; b++) {
-                    System.out.print(contenidoPorCodigo[p][b] + " ");
-                }
-                System.out.println(); // Nueva línea después de imprimir una fila completa
-            }
-
             for (int j = 0; j < contenidoPorCodigo.length; j++) {
                 int[] codigo = contenidoPorCodigo[j];
                 int cantidadUnos = contarUnos(codigo);
@@ -86,12 +78,10 @@ public class ReceptorHam {
             decimalesporMensaje[i] = gg;
         }
 
-        System.out.println(Arrays.toString(decimalesporMensaje));
-
         // buscar el error
         if (contieneSoloCeros(decimalesporMensaje)) {
             System.out.println("\n-------------------------------------------------------------------\n");
-            System.out.println("Todo bien, el array decimalporMensaje contiene únicamente 0's:");
+            System.out.println("Todo bien, el mensaje recibido exitosamente es:");
             for (String x : arregloMensajes) {
                 System.out.println("     " + x);
             }
@@ -103,11 +93,10 @@ public class ReceptorHam {
             for (int i = 0; i < arregloMensajesInvertidos.length; i++) {
                 int[] elemento = arregloMensajesInvertidos[i];
                 int indi = decimalesporMensaje[i];
-                System.out.println(indi);
                 if (indi > 0 && indi < elemento.length) {
                     int hh = elemento[indi-1];
                     int nuevo_num = (hh == 0) ? 1 : 0;
-                    System.out.println("     --> Se ha cambiado el bit erroneo " + hh + " por " + nuevo_num + " para corregir.");
+                    System.out.println("     --> Se ha cambiado el bit erroneo " + hh + " en el indice " + indi + " por " + nuevo_num + " para corregir el mensaje.");
                     elemento[indi-1] = nuevo_num;
                     arregloMensajesInvertidos[i] = elemento;
 
