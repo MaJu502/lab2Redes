@@ -1,89 +1,95 @@
-
 const fs = require('fs');
 
+function DivideXOR(trama, polinomio) {
+    // Esta función toma dos cadenas binarias como parámetros de entrada y calcula 
+    // su resultado XOR (O exclusivo). La operación XOR se realiza en los bits correspondientes 
+    // de las dos cadenas binarias, resultando en una nueva cadena binaria que representa la 
+    // operación lógica XOR entre las dos entradas.
 
-
-// Ruta del archivo
-const rutaArchivo = './message.txt';
-
-function soloHayCeros(cadenaBinaria) {
-    for (let i = 0; i < cadenaBinaria.length; i++) {
-        if (cadenaBinaria[i] !== '0') {
-            return false; // Si encontramos algún caracter diferente de '0', retornamos false
-        }
+    var result = [];
+    for (var i = 0; i < polinomio.length; i++) {
+        result.push(String(Number(trama[i]) ^ Number(polinomio[i])));
     }
-    return true; // Si todos los caracteres son '0', retornamos true
-}
 
-function XOR(b1, b2) {
-    const result = b1 !== b2 ? '1' : '0';
     return result;
 }
 
-function CRC32(trama, polynomial) {
+function CRC32(input, pol) {
+    // Definición de valores
+    var polinomio = Array.from(pol);
+    var trama = Array.from(input);
 
+    // Inicializamos con los primeros n (longitud del polinomio) bits de la trama original
+    var result = trama.slice(0, polinomio.length);
 
-    // Trama + n 0s
-    let tempCode = trama;
-
-    // Trama - bits de inicio
-    let new_t = tempCode.slice(polynomial.length);
-
-    while (true) {
-        let result = '';
-        // console.log(tempCode);
-        // console.log(polynomial);
-        // console.log('----------');
-
-        for (let i = 0; i < polynomial.length; i++) {
-            result += XOR(polynomial[i], tempCode[i]);
-        }
-
-        // console.log(result, '\n');
-
-        // Eliminamos los 0 antes del primer 1
-        // Ej. 010 -> 10
-        let temp_result = result;
-        result = result.replace(/^0+/, '');
-
-        if (result === '' && !new_t.includes('1')) {
-            return temp_result;
-        }
-
-        // Calculamos el desplazamientos de bits que hay que bajar de la trama original
-        let temp = '';
-        const lenNew = polynomial.length - result.length;
-
-        if (new_t.length >= lenNew) {
-            // Por cada desplazamiento que hubo
-            for (let i = 0; i < lenNew; i++) {
-                // Sacamos un bit de la trama original
-                temp += new_t.charAt(0);
-                // Eliminamos ese bit de la trama original
-                new_t = new_t.slice(1);
-            }
+    // Repetimos por cada bit extra de la trama
+    for (var i = 0; i < trama.length - polinomio.length + 1; i++) {
+        if (result[0] === '1') {
+            result = DivideXOR(result, polinomio);
         } else {
-            return temp_result.slice(-(polynomial.length - 1));
+            result = DivideXOR(result, Array(polinomio.length).fill('0'));
+        }
+        // eliminamos el primer bit del resultado.
+        result.shift();
+        // Si todavía hay bits por baja en la trama original. 
+        if (i !== (trama.length - polinomio.length + 1) - 1) {
+            // bajamos el bit siguiente de la trama original.
+            result.push(trama[(polinomio.length + i)]);
+        }
+    }
+
+    return result;
+}
+
+function generateBinaryStrings(n, message, polinomio) {
+    var result = [];
+    var max = Math.pow(2, n);
+  
+    for (var i = 0; i < max; i++) {
+        var bin = i.toString(2);
+        // Añadimos ceros a la izquierda si es necesario para alcanzar la longitud n
+        bin = '1'.repeat(n - bin.length) + bin;
+        console.log(bin)
+
+        var resultado = CRC32(bin, polinomio).join('')
+
+        if (resultado === '0'.repeat(resultado.length) && bin != message) {
+            console.log('utiliza la cadena',bin)
+            console.log('No se han detectado errores.')
+            break
+        } else {
+            // console.log('Se han detectado errores. Trama descartada')
         }
 
-        tempCode = result + temp;
     }
+  
 }
 
 
-let polynomial = "100000100110000010001110110110111"
-// polynomial = '1001'
-// Leer el archivo
-fs.readFile(rutaArchivo, 'utf8', (err, data) => {
-    if (err) {
-        console.error('Error al leer el archivo:', err);
-    } else {
-        console.log('mensaje', data)
-        result = CRC32(data, polynomial)
-        if (soloHayCeros(result)){
-            console.log('No se han detectado errores. \nTrama ->',data)
+
+fs.readFile('./CRC32/message.txt', 'utf8', (err, message) => {
+        if (err) {
+            console.error('Ocurrió un error al leer el archivo message.txt:', err);
+            return;
+        }
+
+        fs.readFile('./CRC32/polinomio.txt', 'utf8', (err, polinomio) => {
+            if (err) {
+                console.error('Ocurrió un error al recuperar el polinomio:', err);
+                return;
+            }
+  
+      // Calculamos los bits con el algoritmo
+        var resultado = CRC32(message, polinomio).join('');
+
+        if (resultado === '0'.repeat(resultado.length)) {
+            console.log('No se han detectado errores. \nTrama recibida:',message.slice(0, polinomio.length))
         } else {
             console.log('Se han detectado errores. Trama descartada')
         }
-    }
+
+        // generateBinaryStrings(message.length+1, message, polinomio)
+
+    });
 });
+  

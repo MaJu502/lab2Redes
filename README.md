@@ -29,6 +29,9 @@ Recuerde que tanto el programa de Python como el de Java deben estar en el mismo
 
 ## Instrucciones para ejecutar CRC32
 
-En el codigo ingresa la trama a evaluar y el programa ya tiene definido por defecto el polinomio a utilizar, este programa generará un txt el cual contiene el mensaje con el algoritmo aplicado. 
 
-En el archivo receptor.js unicamente ejecute en terminal el comando node receptor.js y se imprimira en consola el resultado. 
+1. Generar el mensaje: 
+   ----------------- Comando -----------------
+   python .\CRC32\emisor.py >Trama a ingresar<
+   -------------------------------------------
+   Este programa recibe como argumento la trama que se quiere enviar y aplica el algoritmo CRC32 para calcular los bits de paridad. Este programa utiliza el polinomio 
