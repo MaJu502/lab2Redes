@@ -4,9 +4,7 @@ import json
 
 data = {
     "type": 0, #0 es hamming, 1 es CRC
-    "mensaje": "Hola, servidor",
-    "timestamp": 1628957460,
-    "otrosDatos": [1, 2, 3]
+    "01000": "2462",
 }
 
 HOST = "127.0.0.1"   #IP DEL SERVIDOR 
