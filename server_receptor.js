@@ -1,5 +1,6 @@
 const net = require('net');
 const { calculateCRC, toWord } = require('./CRC32/CRCAlgorithm');
+const { decodeHamming, toWordedHam } = require('./Hamming/receptorHam');
 
 
 const HOST = '127.0.0.1';
@@ -21,7 +22,14 @@ const server = net.createServer((socket) => {
         
         if (newData.type === 0) {
             //Hamming
-            console.log('No se han detectado errores. \nTrama recibida:',message.slice(0, polinomio.length))
+            decodificated_message = []
+            for (let value of newData.message) {
+                decodificated_message.push(decodeHamming(value))
+            }
+            console.log('decodificacion',decodificated_message)
+            tempito = toWordedHam(decodificated_message)
+            console.log("prueba es -> ")
+            console.log(tempito)
         } else if (newData.type === 1) {
             //CRC
             decodificated_message = []
