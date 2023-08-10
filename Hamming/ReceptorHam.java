@@ -5,69 +5,50 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Arrays;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 public class ReceptorHam {
     public static void main(String[] args) {
-        if (args.length > 0) {
-            // revisar que si hayan parametros
-            String jsonData = args[0];
+        // Ruta del archivo de texto a leer
+        String rutaArchivo = "Hamming//codedMessageHamming.txt";
 
-            try {
-                JSONArray jsonArray = new JSONArray(jsonData);
-                int outerLength = jsonArray.length();
+        // Lista para almacenar las líneas del archivo
+        List<String> lineasArchivo = new ArrayList<>();
 
-                for (int i = 0; i < outerLength; i++) {
-                    JSONArray innerArray = jsonArray.getJSONArray(i);
+        try {
+            // Abrir el archivo y leer su contenido
+            BufferedReader lector = new BufferedReader(new FileReader(rutaArchivo));
+            String linea;
 
-                    // Posicion 0 mensajes y 1 codigos que se sacaran en cada iteracion del programa para asi decodificar y verificar cada letra
-
-                    JSONArray firstInnerArray = innerArray.getJSONArray(0);
-                    JSONArray secondInnerArray = innerArray.getJSONArray(1);
-                    String[] mensajesCODED = new String[firstInnerArray.length()];
-                    String[] codigosHAM = new String[secondInnerArray.length()];
-
-                    // llenar arrays
-                    for (int j = 0; j < firstInnerArray.length(); j++) {
-                        mensajesCODED[j] = firstInnerArray.getInt(j);
-                    }
-
-                    for (int j = 0; j < secondInnerArray.length(); j++) {
-                        codigosHAM[j] = secondInnerArray.getString(j);
-                    }
-
-                    // Ya que tenemos el mensaje y codigo de el caracter i especificamente...
-                    
-                    // Primero hay que convertir cada número de la cadena en una cadena en un arreglo de enteros
-                    int[][] arregloMensajesEnteros = convertirArregloEntero(mensajesCODED);
-                    int[][] arregloCodesEnteros = convertirArregloEntero(); // verificar
-                    int[] decimalesporMensaje = new int[arregloMensajesInvertidos.length];
-
-                    int[][] arregloMensajesInvertidos = new int[arregloMensajesEnteros.length][];
-                    for (int j = 0; j < arregloMensajesEnteros.length; j++) {
-                        int[] arregloInvertido = new int[arregloMensajesEnteros[j].length];
-                        for (int k = 0; k < arregloMensajesEnteros[j].length; k++) {
-                            arregloInvertido[k] = arregloMensajesEnteros[j][arregloMensajesEnteros[j].length - 1 - k];
-                        }
-                        arregloMensajesInvertidos[j] = arregloInvertido;
-                    }
-
-
-
-                }
-            } catch (JSONException e) {
-                System.err.println("Error parsing JSON: " + e.getMessage());
+            while ((linea = lector.readLine()) != null) {
+                lineasArchivo.add(linea);
             }
-        } else {
-            System.out.println("No JSON data provided.");
+
+            // Cerrar el lector después de leer el archivo
+            lector.close();
+        } catch (IOException e) {
+            System.out.println("Error al leer el archivo: " + e.getMessage());
         }
 
-        // xdxdxdxd :)
+        // Imprimir el contenido del archivo línea por línea
+        String mensajes = lineasArchivo.get(0);
+        String codes = lineasArchivo.get(1);
+        String[] arregloMensajes = mensajes.split(" ");
+        String[] arregloCodes = codes.split(" ");
 
-        
-        
+        // Convertir cada número en una cadena en un arreglo de enteros
+        int[][] arregloMensajesEnteros = convertirArregloEntero(arregloMensajes);
+
+        int[][] arregloMensajesInvertidos = new int[arregloMensajesEnteros.length][];
+        for (int i = 0; i < arregloMensajesEnteros.length; i++) {
+            int[] arregloInvertido = new int[arregloMensajesEnteros[i].length];
+            for (int j = 0; j < arregloMensajesEnteros[i].length; j++) {
+                arregloInvertido[j] = arregloMensajesEnteros[i][arregloMensajesEnteros[i].length - 1 - j];
+            }
+            arregloMensajesInvertidos[i] = arregloInvertido;
+        }
+
+        int[][] arregloCodesEnteros = convertirArregloEntero(arregloCodes);
+        int[] decimalesporMensaje = new int[arregloMensajesInvertidos.length];
 
         // proceso de decodificar
 
