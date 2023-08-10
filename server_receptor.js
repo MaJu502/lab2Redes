@@ -18,31 +18,37 @@ const server = net.createServer((socket) => {
         // decodificacion = calculateCRC("110110010011001101010010101110111110011")
 
         // CAPA DE ENLACE ---------verificar integridad/corregir--------------------------
-        
+        let validateIntegrity = true
         if (newData.type === 0) {
-            //Hamming
+            
+            //HAMMINH
+
+            //YOUR CODE HERE
+
             console.log('No se han detectado errores. \nTrama recibida:',message.slice(0, polinomio.length))
+
         } else if (newData.type === 1) {
             //CRC
+            
             decodificated_message = []
             for (let value of newData.message) {
-                decodificacion = calculateCRC(value)
-                decodificated_message.push(decodificacion)
+                [decodificacion,validateIntegrity] = calculateCRC(value)
+                decodificated_message.push(decodificacion) // <--- Lista con los caracteres binarios (sin los bits de paridad)
+                if (validateIntegrity==false){
+                    validateIntegrity = false
+                }
             }
-            console.log('decodificacion',decodificated_message)
         }
 
         //-----------------------------------------------------
          // CAPA DE PRESENTACION ---------decodificar el mensaje (pasarlo a letras)--------------------------
-        let wordmessge = []
-        for (let char of decodificated_message) {
-            wordmessge.push(toWord(char))
-        }
+        let wordmessge = toWord(decodificated_message) // <--- Toma la lista, convierte cada caracter binario a ASCII y devuelve la lista ahora con valores ascii
         
         //-----------------------------------------------------
         
         // CAPA DE APLICACION ---------mostrar el mensaje--------------------------
-        console.log("Mensaje convertido",wordmessge)
+        console.log("Mensaje recibido desde el emisor:\n>",wordmessge)
+        console.log(validateIntegrity)
 
         //-----------------------------------------------------
         

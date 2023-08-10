@@ -73,26 +73,18 @@ function calculateCRC(message){
         var finalmessage = message.slice(0, (message.length - polinomio.length)+1)
 
         if (resultado === '0'.repeat(resultado.length)) {
-            return finalmessage
+            return [finalmessage, true]
         } else {
-            return null
+            return [null, false]
         }
-
-
-
-        // generateBinaryStrings(message.length+1, message, polinomio)
-
 }
 
 function toWord(x) {
     let charList = [];
 
     for (let binaryCode of x) {
-        console.log('mensaje en binario', binaryCode)
-        let decimalValue = parseInt(binaryCode, 2);  // Convierte el código binario a decimal
-        console.log('mensaje en decimal', decimalValue)
-        charList.push(String.fromCharCode(decimalValue));  // Convierte el valor decimal a un caracter y agrega al arreglo
-        console.log('mensaje en caracter', String.fromCharCode(decimalValue))
+        let decimalValue = parseInt(binaryCode, 2); 
+        charList.push(String.fromCharCode(decimalValue));
     }
 
     return charList.join(''); 
