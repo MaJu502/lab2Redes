@@ -2,7 +2,7 @@ from word_to_binary import toBinary, toWord
 import socket
 import json
 import os
-
+from CRC32.CRCAlgorithm import calculateCRC
 
 
 HOST = "127.0.0.1"   #IP DEL SERVIDOR 
@@ -76,18 +76,28 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
             print("     3. Regresar a menu de ingreso de mensaje")
 
             choice = input("\n >> Opción: ")
+            
 
             if choice == '1':
                 #hamming_code = calculate_hamming(data)
-                print(" >> Código de Hamming")
                 data = {
                     "type": 0, #0 es hamming, 1 es CRC
                     "message": binarydata,
                 }
+                print(" >> Código de Hamming")
+                
                 s.sendall(json.dumps(data).encode('utf-8'))
             elif choice == '2':
-                #crc_value = calculate_crc32(data)
-                print(" >> Valor CRC32")
+
+                data = {
+                    "type": 1, #0 es hamming, 1 es CRC
+                    "message": binarydata,
+                }
+                crc_value = calculateCRC(data["message"])
+                print("original message", data["message"])
+                print("sent message", crc_value)
+                data["message"] = crc_value
+                s.sendall(json.dumps(data).encode('utf-8'))
             elif choice == '3':
                 break
             else:

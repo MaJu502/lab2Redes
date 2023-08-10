@@ -47,26 +47,25 @@ def CRC32(input:str, pol:str):
     return result[-(len(polinomio)-1):]
 
 
-if __name__ == "__main__":
-    if len(sys.argv) == 1:
-        print("No se ha pasado ninguna trama.\n Formato: python <ruta del programa> <trama>")
-    else:
-        trama = sys.argv[1]
-        pol = '100000100110000010001110110110111'
+def calculateCRC(message):
+    pol = '100000100110000010001110110110111'
+
+    result_message = []
+
+    for trama in message:
+        #Calculamos los bits con el algoritmo
+        bitparidad = "".join(CRC32(trama, pol))
+        #A nuestra trama original agregamos los bits calculados
+        unit_result = trama + bitparidad
+
+        gen_txt(message, 'message')
+        gen_txt(pol, 'polinomio')
+
+        print(f"Trama a enviar: \t{trama}")
+        print(f"Mensaje enviado: \t{message}")
+
+        result_message.append(unit_result)
+
+    return result_message
         
-        #Si la cadena binaria es vállida
-        if all(c in '01' for c in trama):
-
-            #Calculamos los bits con el algoritmo
-            bitparidad = "".join(CRC32(trama, pol))
-            #A nuestra trama original agregamos los bits calculados
-            message = trama + bitparidad
-
-            gen_txt(message, 'message')
-            gen_txt(pol, 'polinomio')
-
-            print(f"Trama a enviar: \t{trama}")
-            print(f"Mensaje enviado: \t{message}")
-        else:
-            print("El argumento NO es una cadena binaria válida.")
 

@@ -65,31 +65,43 @@ function generateBinaryStrings(n, message, polinomio) {
   
 }
 
+function calculateCRC(message){
+    let polinomio = "100000100110000010001110110110111"
 
-
-fs.readFile('./CRC32/message.txt', 'utf8', (err, message) => {
-        if (err) {
-            console.error('Ocurrió un error al leer el archivo message.txt:', err);
-            return;
-        }
-
-        fs.readFile('./CRC32/polinomio.txt', 'utf8', (err, polinomio) => {
-            if (err) {
-                console.error('Ocurrió un error al recuperar el polinomio:', err);
-                return;
-            }
-  
-      // Calculamos los bits con el algoritmo
+    // Calculamos los bits con el algoritmo
         var resultado = CRC32(message, polinomio).join('');
+        var finalmessage = message.slice(0, (message.length - polinomio.length)+1)
 
         if (resultado === '0'.repeat(resultado.length)) {
-            console.log('No se han detectado errores. \nTrama recibida:',message.slice(0, polinomio.length))
+            return finalmessage
         } else {
-            console.log('Se han detectado errores. Trama descartada')
+            return null
         }
+
+
 
         // generateBinaryStrings(message.length+1, message, polinomio)
 
-    });
-});
+}
+
+function toWord(x) {
+    let charList = [];
+
+    for (let binaryCode of x) {
+        console.log('mensaje en binario', binaryCode)
+        let decimalValue = parseInt(binaryCode, 2);  // Convierte el código binario a decimal
+        console.log('mensaje en decimal', decimalValue)
+        charList.push(String.fromCharCode(decimalValue));  // Convierte el valor decimal a un caracter y agrega al arreglo
+        console.log('mensaje en caracter', String.fromCharCode(decimalValue))
+    }
+
+    return charList.join(''); 
+}
+
+
   
+
+module.exports = {
+    calculateCRC,
+    toWord,
+};
