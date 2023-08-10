@@ -82,7 +82,6 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
             if choice == '1':
                 #hamming_code = calculate_hamming(data)
                 print(" >> Código de Hamming")
-                mensajesHam, codesHam = emisor_Hamming()
                 hammingData = emisor_Hamming(binarydata)
                 print(hammingData)
                 data = {
