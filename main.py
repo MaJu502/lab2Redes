@@ -14,8 +14,8 @@ def main():
         choice = input("\n >> Opción: ")
 
         if choice == '1':
-            user_input = input("\n >> Ingrese el mensaje: ")
-            binarydata = toBinary(user_input)
+            filedata = input("\n >> Ingrese el mensaje: ")
+            binarydata = toBinary(filedata)
         elif choice == '2':
             file_name = input("\n >> Ingrese el nombre del archivo txt donde se encuentra el mensaje: ") + ".txt"
 
@@ -24,9 +24,9 @@ def main():
                 continue
 
             with open(file_name, 'r') as file:
-                data = file.read()
+                filedata = file.read()
 
-            binarydata = toBinary(data)
+            binarydata = toBinary(filedata)
             print(" >> binary data inicial generada --> ", binarydata)
             print("\n")
         elif choice == '3':
@@ -50,8 +50,15 @@ def main():
             if choice == '1':
                 #hamming_code = calculate_hamming(data)
                 print(" >> Código de Hamming")
-                hamdata = emisor_Hamming(binarydata)
-                print(hamdata)
+                hammingData = emisor_Hamming(binarydata)
+                print(hammingData)
+                data = {
+                    "type": 0, #0 es hamming, 1 es CRC
+                    "message": binarydata,
+                }
+                print("original message", filedata)
+                print("original message (binary)", data["message"])
+                print("sent message", " ".join(element for pair in hammingData for element in pair[0]))
 
             elif choice == '2':
                 #crc_value = calculate_crc32(data)
