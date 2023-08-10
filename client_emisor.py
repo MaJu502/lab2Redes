@@ -1,4 +1,5 @@
 from word_to_binary import toBinary, toWord
+from Hamming.EmisorHam import emisor_Hamming
 import socket
 import json
 import os
@@ -80,6 +81,11 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
 
             if choice == '1':
                 #hamming_code = calculate_hamming(data)
+<<<<<<< Updated upstream
+=======
+                print(" >> Código de Hamming")
+                mensajesHam, codesHam = emisor_Hamming()
+>>>>>>> Stashed changes
                 data = {
                     "type": 0, #0 es hamming, 1 es CRC
                     "message": binarydata,

@@ -8,7 +8,7 @@ param: recibe 'x' mensaje completo ingresado por usuario para ser
 def toBinary(x):
     retorno = []
     for i in x:
-        retorno.append(format(ord(i), '04b'))
+        retorno.append(format(ord(i), '08b'))
     return retorno
 
 """

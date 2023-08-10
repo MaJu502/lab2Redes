@@ -1,5 +1,6 @@
 import os
 from word_to_binary import toBinary, toWord
+from Hamming.EmisorHam import *
 
 def main():
     print("     -- Bienvenido --\n En este programa podrás enviar un mensaje desde un emisor a un receptor usando\n los algoritmos ya sea de Hamming (detección y corrección) o CRC32 (detección).")
@@ -26,6 +27,8 @@ def main():
                 data = file.read()
 
             binarydata = toBinary(data)
+            print(" >> binary data inicial generada --> ", binarydata)
+            print("\n")
         elif choice == '3':
             break
         else:
@@ -47,6 +50,9 @@ def main():
             if choice == '1':
                 #hamming_code = calculate_hamming(data)
                 print(" >> Código de Hamming")
+                hamdata = emisor_Hamming(binarydata)
+                print(hamdata)
+
             elif choice == '2':
                 #crc_value = calculate_crc32(data)
                 print(" >> Valor CRC32")

@@ -5,21 +5,26 @@
 
 
 
-def emisor_Hamming(mensaje):
-    # leer el txt donde esta el mensaje
-    try:
-        mensaje = "Hamming\\" + mensaje + ".txt" # para finalidades de ejecución
-        with open(mensaje, 'r') as archivo:
-            a = archivo.readline().strip()
-        a = a.replace(' ', '')
+def emisor_Hamming(binaryinfo):
+    """# leer el txt donde esta el mensaje
+    mensaje = "Hamming\\" + mensaje + ".txt" # para finalidades de ejecución
+    with open(mensaje, 'r') as archivo:
+        a = archivo.readline().strip()
+    a = a.replace(' ', '')"""
+    data = []
+    for i in binaryinfo:
+        """ 
+        Por cada caracter del mensaje primero se completan 
+        los cero que hagan faltapara hamming
+        """
+        ceros_faltantes = (4 - len(i) % 4) % 4
+        i += '0' * ceros_faltantes
+        conjuntos_de_4 = [i[x:x+4] for x in range(0, len(i), 4)]
 
-        # Calcular la cantidad de ceros necesarios para completar el último conjunto
-        ceros_faltantes = (4 - len(a) % 4) % 4
-        a += '0' * ceros_faltantes
-
-        # Separar el mensaje en conjuntos de 4 elementos
-        conjuntos_de_4 = [a[i:i+4] for i in range(0, len(a), 4)]
-
+        """
+        Ahora que ya estan los ceros y los conjuntos de 4 bits
+        podemos codificar dicha cadena con hamming.
+        """
         retorno = []
         for y in conjuntos_de_4:
             retorno.append(procesoHamming(y))
@@ -29,27 +34,13 @@ def emisor_Hamming(mensaje):
         for u in retorno:
             mensajes.append(u[0])
         
-        retorno_str = [str(num) for num in mensajes]
+        retorno_str = [str(num) for num in mensajes] # cadena codificada
         codes = [str(x) for x in codes]
-        codes = '-'.join(codes)
-        codes = codes.replace('[', '')
-        codes = codes.replace(']', '')
-        codes = codes.replace(', ', '')
-        codes = codes.replace('-', ' ')
-        
+        codes = [''.join(char for char in code if char.isdigit()) for code in codes] # bits de paridad obtenidos
 
-
-        # Abrir el archivo en modo escritura ('w') y escribir los números de retorno
-        with open("Hamming//codedMessageHamming.txt", 'w') as archivo:
-            archivo.write(' '.join(retorno_str))
-            archivo.write('\n')
-            archivo.write(codes)
-        
-        print(" -> Mensaje codificado en codedMessageHamming.txt ")
-
-    except FileNotFoundError:
-        print(f"Error: El archivo '{mensaje}' no fue encontrado.")
-        return None
+        data.append((retorno_str, codes))
+    
+    return data
 
 def procesoHamming(a):
     # paso 1 contar bits
