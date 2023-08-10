@@ -47,8 +47,8 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
         binarydata = None
 
         if choice == '1':
-            user_input = input("\n >> Ingrese el mensaje: ")
-            binarydata = toBinary(user_input)
+            filedata = input("\n >> Ingrese el mensaje: ")
+            binarydata = toBinary(filedata)
         elif choice == '2':
             file_name = input("\n >> Ingrese el nombre del archivo txt donde se encuentra el mensaje: ") + ".txt"
 
@@ -57,9 +57,9 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
                 continue
 
             with open(file_name, 'r') as file:
-                data = file.read()
+                filedata = file.read()
 
-            binarydata = toBinary(data)
+            binarydata = toBinary(filedata)
         elif choice == '3':
             break
         else:
@@ -83,12 +83,16 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
                 #hamming_code = calculate_hamming(data)
                 print(" >> Código de Hamming")
                 mensajesHam, codesHam = emisor_Hamming()
+                hammingData = emisor_Hamming(binarydata)
+                print(hammingData)
                 data = {
                     "type": 0, #0 es hamming, 1 es CRC
                     "message": binarydata,
                 }
-                print(" >> Código de Hamming")
-                
+                print("original message", filedata)
+                print("original message (binary)", data["message"])
+                print("sent message", " ".join(element for pair in hammingData for element in pair[0]))
+                data["message"] = hammingData                
                 s.sendall(json.dumps(data).encode('utf-8'))
             elif choice == '2':
 
