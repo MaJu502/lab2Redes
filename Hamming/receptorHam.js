@@ -20,8 +20,7 @@ function contieneSoloCeros(array) {
     return array.every(elemento => elemento === 0);
 }
 
-function toWordedHam(x) {
-    var binary_list = x; // arreglo
+function toWordedHam(binary_list) {
     var char_list = [];
 
     for (var i = 0; i < binary_list.length; i++) {
@@ -32,6 +31,7 @@ function toWordedHam(x) {
 
     return char_list.join('');  // Une la lista de caracteres en una cadena
 }
+
 
 
 function decodeHamming(binaryinfo) {

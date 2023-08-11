@@ -6,21 +6,10 @@
 
 
 def emisor_Hamming(binaryinfo):
-    """# leer el txt donde esta el mensaje
-    mensaje = "Hamming\\" + mensaje + ".txt" # para finalidades de ejecución
-    with open(mensaje, 'r') as archivo:
-        a = archivo.readline().strip()
-    a = a.replace(' ', '')"""
     data = []
-    for i in binaryinfo:
-        """ 
-        Por cada caracter del mensaje primero se completan 
-        los cero que hagan faltapara hamming
-        """
-        ceros_faltantes = (4 - len(i) % 4) % 4
-        i += '0' * ceros_faltantes
-        conjuntos_de_4 = [i[x:x+4] for x in range(0, len(i), 4)]
-
+    for elemento in binaryinfo:
+        binario = elemento
+        conjuntos_de_4 = [binario[i:i+4] for i in range(0, len(binario), 4)]
         """
         Ahora que ya estan los ceros y los conjuntos de 4 bits
         podemos codificar dicha cadena con hamming.
@@ -33,13 +22,16 @@ def emisor_Hamming(binaryinfo):
         codes = retorno[0][1]
         for u in retorno:
             mensajes.append(u[0])
-        
+            
         retorno_str = [str(num) for num in mensajes] # cadena codificada
         codes = [str(x) for x in codes]
         codes = [''.join(char for char in code if char.isdigit()) for code in codes] # bits de paridad obtenidos
 
+        print(" para codigo --> ", elemento)
+        print(retorno_str, codes)
+
         data.append((retorno_str, codes))
-    
+        
     return data
 
 def procesoHamming(a):
@@ -117,4 +109,6 @@ def procesoHamming(a):
     hammingCode = ''.join(str(item) for item in retorno)
     return hammingCode,para_obtener_paridad
 
-emisor_Hamming("mensajeHam_ingresado")
+x = (emisor_Hamming(["01100010"]))
+for i in x:
+    print(i)
