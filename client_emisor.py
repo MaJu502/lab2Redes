@@ -1,6 +1,7 @@
 from word_to_binary import toBinary, toWord
 from Hamming.EmisorHam import emisor_Hamming
 import socket
+import random
 import json
 import os
 from CRC32.CRCAlgorithm import calculateCRC
@@ -8,6 +9,18 @@ from CRC32.CRCAlgorithm import calculateCRC
 
 HOST = "127.0.0.1"   #IP DEL SERVIDOR 
 PORT = 65123
+
+
+def ruidoGen(payload, prob):
+    mod_payload = []
+    for cadena in payload:
+        mod_payload.append(''.join([aplicar_ruido(bit, prob) for bit in cadena]))
+    return mod_payload
+
+def aplicar_ruido(bit, probabilidad):
+    if random.random() < probabilidad:
+        return '1' if bit == '0' else '0'
+    return bit
 
 #Your Code Here - Aplicar algoritmo seleccionado
 
@@ -94,15 +107,29 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
                 data["message"] = hammingData                
                 s.sendall(json.dumps(data).encode('utf-8'))
             elif choice == '2':
+                data_con_ruido = 0
 
                 data = {
                     "type": 1, #0 es hamming, 1 es CRC
                     "message": binarydata,
                 }
                 crc_value = calculateCRC(data["message"])
-                print("original message", data["message"])
+                print("ascii message",filedata)
                 print("sent message", crc_value)
-                data["message"] = crc_value
+
+
+                #CAPA DE RUIDO
+
+                final_message = ruidoGen(crc_value,0.01)
+
+                #Si son iguales, no hubo cambio
+                if final_message != crc_value:
+                    print('Hubo cambio')
+                    data_con_ruido += 1
+
+                data["message"] = final_message
+
+
                 s.sendall(json.dumps(data).encode('utf-8'))
             elif choice == '3':
                 break

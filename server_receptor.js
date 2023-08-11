@@ -8,6 +8,7 @@ const PORT = 65123;
 
 const server = net.createServer((socket) => {
     console.log(`Conexion Entrante del proceso ${socket.remoteAddress}:${socket.remotePort}`);
+    let error_detection = 0
     
     socket.on('data', (data) => {
         // console.log(`Recibido: \n${data}`);
@@ -35,9 +36,9 @@ const server = net.createServer((socket) => {
             
             decodificated_message = []
             for (let value of newData.message) {
-                [decodificacion,validateIntegrity] = calculateCRC(value)
+                [decodificacion,newval] = calculateCRC(value)
                 decodificated_message.push(decodificacion) // <--- Lista con los caracteres binarios (sin los bits de paridad)
-                if (validateIntegrity==false){
+                if (newval==false){
                     validateIntegrity = false
                 }
             }
@@ -51,13 +52,19 @@ const server = net.createServer((socket) => {
         
         // CAPA DE APLICACION ---------mostrar el mensaje--------------------------
         console.log("Mensaje recibido desde el emisor:\n>",wordmessge)
-        console.log(validateIntegrity)
+        // console.log(validateIntegrity)
+        if (!validateIntegrity) {
+            error_detection += 1
+        }
 
         //-----------------------------------------------------
         
     });
 
+    
+
     socket.on('end', () => {
+        console.log("errores detectados",error_detection)
         console.log(`Desconexión del proceso ${socket.remoteAddress}:${socket.remotePort}`);
     });
 
