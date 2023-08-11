@@ -61,9 +61,6 @@ def calculateCRC(message):
         gen_txt(message, 'message')
         gen_txt(pol, 'polinomio')
 
-        print(f"Trama a enviar: \t{trama}")
-        print(f"Mensaje enviado: \t{message}")
-
         result_message.append(unit_result)
 
     return result_message
