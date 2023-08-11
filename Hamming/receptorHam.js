@@ -20,7 +20,8 @@ function contieneSoloCeros(array) {
     return array.every(elemento => elemento === 0);
 }
 
-function toWordedHam(binary_list) {
+function toWordedHam(x) {
+    var binary_list = x; // arreglo
     var char_list = [];
 
     for (var i = 0; i < binary_list.length; i++) {
@@ -33,14 +34,21 @@ function toWordedHam(binary_list) {
 }
 
 
-
 function decodeHamming(binaryinfo) {
+    console.log(binaryinfo)
     const arregloMensajes = binaryinfo[0];
     const arregloCodes = binaryinfo[1];
 
+    console.log("Arreglo de Mensajes:", arregloMensajes);
+    console.log("Arreglo de Codes:", arregloCodes);
+
     const arregloMensajesEnteros = convertirArregloEntero(arregloMensajes);
 
+    console.log("Arreglo de Mensajes Enteros:", arregloMensajesEnteros);
+
     const arregloMensajesInvertidos = arregloMensajesEnteros.map(arreglo => arreglo.reverse());
+
+    console.log("Arreglo de Mensajes Invertidos:", arregloMensajesInvertidos);
 
     const arregloCodesEnteros = convertirArregloEntero(arregloCodes);
     const decimalesporMensaje = [];
@@ -51,10 +59,14 @@ function decodeHamming(binaryinfo) {
         const contenido = arregloMensajesInvertidos[i];
         const contenidoPorCodigo = obtenerContenidoDecodificado(contenido, arregloCodesEnteros);
 
+        console.log("Contenido por Código:", contenidoPorCodigo);
+
         for (let j = 0; j < contenidoPorCodigo.length; j++) {
             const codigo = contenidoPorCodigo[j];
             const cantidadUnos = contarUnos(codigo);
             const cantidadCeros = codigo.length - cantidadUnos;
+
+            console.log(`Mensaje ${i}, Código ${j}: Cantidad de unos: ${cantidadUnos}, Cantidad de ceros: ${cantidadCeros}`);
 
             // Verificar si hay par o impar en la cantidad de 1's y 0's
             if (cantidadUnos % 2 === 0 && cantidadCeros % 2 === 0) {
@@ -67,7 +79,12 @@ function decodeHamming(binaryinfo) {
         const resultado = resultado_paridad.join('');
         const gg = parseInt(resultado, 2);
         decimalesporMensaje[i] = gg;
+
+        console.log(`Resultado Paridad para Mensaje ${i}: ${resultado_paridad}`);
+        console.log(`Decimal por Mensaje ${i}: ${gg}`);
     }
+
+    console.log("Decimales por Mensaje:", decimalesporMensaje);
 
     // Buscar el error
     if (contieneSoloCeros(decimalesporMensaje)) {
@@ -86,7 +103,7 @@ function decodeHamming(binaryinfo) {
             tempArray.splice(3, 1); // Borra la posición 3
             tempArray.splice(1, 1); // Borra la posición 1
             tempArray.splice(0, 1); // Borra la posición 0
-            temp[i] = tempArray.join(''); // Convierte el arreglo en una cadena nuevamente
+            temp[i] = tempArray.reverse().join(''); // Convierte el arreglo en una cadena nuevamente
         }
 
         const arregloAgrupado = temp.map(arreglo => arreglo.split('').join(''));
@@ -144,3 +161,5 @@ module.exports = {
     decodeHamming,
     toWordedHam
 };
+
+decodeHamming([['0110011', '1001011'], ['0246', '1256', '3456']])

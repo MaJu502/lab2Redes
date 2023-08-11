@@ -24,3 +24,5 @@ def toWord(x):
         char_list.append(chr(decimal_value))  # Convierte el valor decimal a un caracter y agrega a la lista
 
     return ''.join(char_list)  # Une la lista de caracteres en una cadena
+
+print(toBinary("h"))

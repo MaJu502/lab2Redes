@@ -4,7 +4,6 @@
 # redes
 
 
-
 def emisor_Hamming(binaryinfo):
     data = []
     for elemento in binaryinfo:
@@ -46,10 +45,7 @@ def procesoHamming(a):
     temp_total = 2 ** factor
 
     # paso 3 calcular bits para codificar con el factor encontrado
-    casillas_mod = []
-    for i in range(factor):
-        casillas_mod.append((2 ** i)-1)
-    
+    casillas_mod = [0,1,3]
     retorno = []
     casillas_x = []
     for t in range(bits + factor):
@@ -59,12 +55,14 @@ def procesoHamming(a):
         else: 
             retorno.append('y')
 
+    retorno = retorno[::-1]
+
     for i in a:
         for j,h in enumerate(retorno):
             if retorno[j] == "y":
                 retorno[j] = i
                 break
-
+    
     # escribir tabla
     nueva_tabla = []
     for i in casillas_mod:
@@ -86,6 +84,8 @@ def procesoHamming(a):
                 a_obtener.append(h-1)  
         para_obtener_paridad.append(a_obtener)
 
+    retorno = retorno[::-1]
+
     for i in para_obtener_paridad:
         contz = 0
         contu = 0
@@ -98,10 +98,10 @@ def procesoHamming(a):
 
         for y in i:
             if retorno[y] == "x":
-                if contz < contu:
-                    retorno[y] = 0
-                if contu < contz:
-                  retorno[y] = 1
+                if contz % 2 == 0:
+                    retorno[y] = 1
+                else:
+                  retorno[y] = 0
                 
     retorno = retorno[::-1]
 
@@ -109,6 +109,4 @@ def procesoHamming(a):
     hammingCode = ''.join(str(item) for item in retorno)
     return hammingCode,para_obtener_paridad
 
-x = (emisor_Hamming(["01100010"]))
-for i in x:
-    print(i)
+print(emisor_Hamming(['01101000']))
