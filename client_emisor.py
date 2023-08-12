@@ -5,6 +5,7 @@ import random
 import json
 import os
 from CRC32.CRCAlgorithm import calculateCRC
+import time
 
 
 HOST = "127.0.0.1"   #IP DEL SERVIDOR 
@@ -96,34 +97,37 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
                 #hamming_code = calculate_hamming(data)
                 data_con_ruido = 0
                 print(" >> Código de Hamming")
+                binarydata = toBinary("hola")
                 hammingData = emisor_Hamming(binarydata)
-                data = {
-                    "type": 0, #0 es hamming, 1 es CRC
-                    "message": binarydata,
-                    "original": filedata,
-                }
-                print(" >> sent message without noise -> ", " ".join(element for pair in hammingData for element in pair[0]))
+                for iteraciones in range(50000):
+                    data = {
+                        "type": 0, #0 es hamming, 1 es CRC
+                        "message": binarydata,
+                        "original": filedata,
+                    }
+                    print(" >> sent message without noise -> ", " ".join(element for pair in hammingData for element in pair[0]))
 
-                #CAPA DE RUIDO                
-                mensajitos = [sublist for sublist, _ in hammingData for sublist in sublist]
-                codersss = [[item for item in sublist] for _, sublist in hammingData]
+                    #CAPA DE RUIDO                
+                    mensajitos = [sublist for sublist, _ in hammingData for sublist in sublist]
+                    codersss = [[item for item in sublist] for _, sublist in hammingData]
 
-                noiseHam = []
-                for hh in hammingData:
-                    tempi = ruidoGen(hh[0], 0.01)
-                    noiseHam.append((tempi, hh[1]))
-                
-                mensajitofiufiu = [sublist for sublist, _ in noiseHam for sublist in sublist]
-                print(" >> sent message with noise -> ", mensajitofiufiu)
-                codesfiufiu = [[item for item in sublist] for _, sublist in noiseHam]
+                    noiseHam = []
+                    for hh in hammingData:
+                        tempi = ruidoGen(hh[0], 0.01)
+                        noiseHam.append((tempi, hh[1]))
+                    
+                    mensajitofiufiu = [sublist for sublist, _ in noiseHam for sublist in sublist]
+                    print(" >> sent message with noise -> ", mensajitofiufiu)
+                    codesfiufiu = [[item for item in sublist] for _, sublist in noiseHam]
 
-                #Si son iguales, no hubo cambio
-                if mensajitofiufiu != mensajitos:
-                    print('Hubo cambio')
-                    data_con_ruido += 1
+                    #Si son iguales, no hubo cambio
+                    if mensajitofiufiu != mensajitos:
+                        print('Hubo cambio')
+                        data_con_ruido += 1
 
-                data["message"] = noiseHam               
-                s.sendall(json.dumps(data).encode('utf-8'))
+                    data["message"] = noiseHam               
+                    s.sendall(json.dumps(data).encode('utf-8'))
+                    time.sleep(0.001)
             elif choice == '2':
                 data_con_ruido = 0
 
