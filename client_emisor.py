@@ -94,17 +94,35 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
 
             if choice == '1':
                 #hamming_code = calculate_hamming(data)
+                data_con_ruido = 0
                 print(" >> Código de Hamming")
                 hammingData = emisor_Hamming(binarydata)
-                print(hammingData)
                 data = {
                     "type": 0, #0 es hamming, 1 es CRC
                     "message": binarydata,
+                    "original": filedata,
                 }
-                print("original message", filedata)
-                print("original message (binary)", data["message"])
-                print("sent message", " ".join(element for pair in hammingData for element in pair[0]))
-                data["message"] = hammingData                
+                print(" >> sent message without noise -> ", " ".join(element for pair in hammingData for element in pair[0]))
+
+                #CAPA DE RUIDO                
+                mensajitos = [sublist for sublist, _ in hammingData for sublist in sublist]
+                codersss = [[item for item in sublist] for _, sublist in hammingData]
+
+                noiseHam = []
+                for hh in hammingData:
+                    tempi = ruidoGen(hh[0], 0.01)
+                    noiseHam.append((tempi, hh[1]))
+                
+                mensajitofiufiu = [sublist for sublist, _ in noiseHam for sublist in sublist]
+                print(" >> sent message with noise -> ", mensajitofiufiu)
+                codesfiufiu = [[item for item in sublist] for _, sublist in noiseHam]
+
+                #Si son iguales, no hubo cambio
+                if mensajitofiufiu != mensajitos:
+                    print('Hubo cambio')
+                    data_con_ruido += 1
+
+                data["message"] = noiseHam               
                 s.sendall(json.dumps(data).encode('utf-8'))
             elif choice == '2':
                 data_con_ruido = 0

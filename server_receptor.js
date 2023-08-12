@@ -9,6 +9,11 @@ const PORT = 65123;
 const server = net.createServer((socket) => {
     console.log(`Conexion Entrante del proceso ${socket.remoteAddress}:${socket.remotePort}`);
     let error_detection = 0
+    let mensajeResHam; 
+    let contadorErroresHam = 0;
+    let contadorCorreccionesHam = 0;
+    let mensajeOrgienHam;
+    let iters = 0;
     
     socket.on('data', (data) => {
         // console.log(`Recibido: \n${data}`);
@@ -23,12 +28,18 @@ const server = net.createServer((socket) => {
         let validateIntegrity = true
         if (newData.type === 0) {
             //Hamming
+            iters += 1;
             decodificated_message = []
             for (let value of newData.message) {
-                console.log(value)
-                decodificated_message.push(decodeHamming(value))
+                resHamming = decodeHamming(value)
+                mensajeResHam = resHamming[0]
+                contadorErroresHam += resHamming[1]
+                decodificated_message.push(mensajeResHam)
             }
+            mensajeOrgienHam = newData.original
+            console.log('mensaje original -> ',mensajeOrgienHam)
             console.log('decodificacion',decodificated_message)
+            console.log('Cantidad de errores -> ', contadorErroresHam)
         } else if (newData.type === 1) {
             //CRC
             
@@ -47,9 +58,17 @@ const server = net.createServer((socket) => {
         let wordmessge = toWord(decodificated_message) // <--- Toma la lista, convierte cada caracter binario a ASCII y devuelve la lista ahora con valores ascii
         
         //-----------------------------------------------------
+
+        // verificar mensaje hamming
+
+        if (mensajeOrgienHam  !== wordmessge) {
+            contadorCorreccionesHam += 1
+        }
         
         // CAPA DE APLICACION ---------mostrar el mensaje--------------------------
         console.log("Mensaje recibido desde el emisor:\n>",wordmessge)
+        console.log("Cantidad de recibidos con o sin correcciones malos -> ", contadorCorreccionesHam)
+        console.log("cantidad de iteraciones -> ", iters)
         // console.log(validateIntegrity)
         if (!validateIntegrity) {
             error_detection += 1

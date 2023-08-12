@@ -9,12 +9,23 @@ import string
 
 HOST = "127.0.0.1"   #IP DEL SERVIDOR 
 PORT = 65123
-n_loops = 50000 #Cantidad de iteraciones
+n_loops = 5 #Cantidad de iteraciones
 n_length = 8 #Longitud de las cadenas
 n_prob = 0.1
 
+def toBinary(x):
+    retorno = []
+    for i in x:
+        retorno.append(format(ord(i), '08b'))
+    return retorno
+
 def generar_palabra(longitud):
     return ''.join(random.choice(string.ascii_lowercase) for i in range(longitud))
+
+def generate_random_word(length):
+    letters = string.ascii_letters
+    random_word = ''.join(random.choice(letters) for _ in range(length))
+    return random_word
 
 def random_binary_string(n):
     return ''.join([str(random.randint(0, 1)) for _ in range(n)])
@@ -46,19 +57,44 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
         choice = input("\n >> Opción: ")
 
         if choice == '1':
-            #hamming_code = calculate_hamming(data)
-            print(" >> Código de Hamming")
-            hammingData = emisor_Hamming(binarydata)
-            print(hammingData)
-            data = {
-                "type": 0, #0 es hamming, 1 es CRC
-                "message": binarydata,
-            }
-            # print("original message", filedata)
-            print("original message (binary)", data["message"])
-            print("sent message", " ".join(element for pair in hammingData for element in pair[0]))
-            data["message"] = hammingData                
-            s.sendall(json.dumps(data).encode('utf-8'))
+            data_con_ruido = 0
+            print('calculando...')
+
+            for i in range(n_loops):
+                palabra_random = generate_random_word(5)
+                binarydata = toBinary(palabra_random)
+
+                data = {
+                    "type": 0, #0 es hamming, 1 es CRC
+                    "message": binarydata,
+                    "original": palabra_random,
+                }
+                print(" >> Código de Hamming")
+                hammingData = emisor_Hamming(binarydata)
+
+
+                #CAPA DE RUIDO                
+                mensajitos = [sublist for sublist, _ in hammingData for sublist in sublist]
+                codersss = [[item for item in sublist] for _, sublist in hammingData]
+
+                noiseHam = []
+                for hh in hammingData:
+                    tempi = ruidoGen(hh[0], 0.01)
+                    noiseHam.append((tempi, hh[1]))
+                
+                mensajitofiufiu = [sublist for sublist, _ in noiseHam for sublist in sublist]
+                print(" >> sent message with noise -> ", mensajitofiufiu)
+                codesfiufiu = [[item for item in sublist] for _, sublist in noiseHam]
+
+                #Si son iguales, no hubo cambio
+                if mensajitofiufiu != mensajitos:
+                    print('Hubo cambio')
+                    data_con_ruido += 1
+
+                data["message"] = noiseHam               
+                s.sendall(json.dumps(data).encode('utf-8') + b'\n')
+            print(f"Se envio {data_con_ruido} datos con ruido de {n_loops}")
+
         elif choice == '2':
             data_con_ruido = 0
             print('calculando...')

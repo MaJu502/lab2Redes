@@ -26,9 +26,6 @@ def emisor_Hamming(binaryinfo):
         codes = [str(x) for x in codes]
         codes = [''.join(char for char in code if char.isdigit()) for code in codes] # bits de paridad obtenidos
 
-        print(" para codigo --> ", elemento)
-        print(retorno_str, codes)
-
         data.append((retorno_str, codes))
         
     return data
@@ -108,5 +105,3 @@ def procesoHamming(a):
     # Juntar los elementos en una cadena
     hammingCode = ''.join(str(item) for item in retorno)
     return hammingCode,para_obtener_paridad
-
-print(emisor_Hamming(['01101000']))
