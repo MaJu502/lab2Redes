@@ -20,4 +20,4 @@ Este repositorio contiene archivos para simular algoritmos de detección y corre
 2. Edita `client_emisor.py` para cambiar `NUM_ITERACIONES`.
 3. Ejecuta: `python3 client_emisor.py`.
 
-¡Listo! Has ejecutado las simulaciones de detección y corrección de errores con CRC y Hamming. Consulta la documentación para más detalles.
+¡Listo! Has ejecutado las simulaciones de detección y corrección de errores con CRC y Hamming. Consulta con los creadores para más detalles.
